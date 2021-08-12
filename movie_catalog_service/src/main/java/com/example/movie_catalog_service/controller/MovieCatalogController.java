@@ -4,6 +4,7 @@ package com.example.movie_catalog_service.controller;
 import com.example.movie_catalog_service.CatalogItem;
 import com.example.movie_catalog_service.Movie;
 import com.example.movie_catalog_service.Rating;
+import com.example.movie_catalog_service.UserRating;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,34 +30,26 @@ public class MovieCatalogController {
     @RequestMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId) {
 
-
-        List<Rating> ratings = Arrays.asList(
-                new Rating("1", 2),
-                new Rating("2", 4)
-        );
-        return ratings.stream().map(rating -> {
-                    Movie movie = webClientBuilder.build()
-                            .get()
-                            .uri("http://localhost:8081/movies/" + rating.getMovieId())
-                            .retrieve()
-                            .bodyToMono(Movie.class)
-                            .block();
-                    return new CatalogItem(movie.getName(), "mv", rating.getRating());
-                }
-
-        ).collect(Collectors.toList());
-
-
-//        List<Rating> ratings = Arrays.asList(
-//                new Rating("1", 2),
-//                new Rating("2", 4)
-//        );
 //        return ratings.stream().map(rating -> {
-//             Movie movie = restTemplate.getForObject("http://localhost:8081/movies/" + rating.getMovieId(), Movie.class);
-//               return new CatalogItem(movie.getName(), "mv", rating.getRating());
-//        }
+//                    Movie movie = webClientBuilder.build()
+//                            .get()
+//                            .uri("http://localhost:8081/movies/" + rating.getMovieId())
+//                            .retrieve()
+//                            .bodyToMono(Movie.class)
+//                            .block();
+//                    return new CatalogItem(movie.getName(), "mv", rating.getRating());
+//                }
 //
 //        ).collect(Collectors.toList());
+
+
+        UserRating ratings =  restTemplate.getForObject("http://localhost:8082/ratingsdata/users/" + userId, UserRating.class);
+        return ratings.getUserRating().stream().map(rating -> {
+             Movie movie = restTemplate.getForObject("http://localhost:8081/movies/" + rating.getMovieId(), Movie.class);
+               return new CatalogItem(movie.getName(), "mv", rating.getRating());
+        }
+
+        ).collect(Collectors.toList());
 
     }
 }
