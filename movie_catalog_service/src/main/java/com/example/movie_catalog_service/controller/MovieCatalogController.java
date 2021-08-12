@@ -4,6 +4,8 @@ package com.example.movie_catalog_service.controller;
 import com.example.movie_catalog_service.CatalogItem;
 import com.example.movie_catalog_service.Movie;
 import com.example.movie_catalog_service.Rating;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +20,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/catalog")
 public class MovieCatalogController {
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @RequestMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId) {
 
-        RestTemplate restTemplate = new RestTemplate();
 
         List<Rating> ratings = Arrays.asList(
                 new Rating("1", 2),
