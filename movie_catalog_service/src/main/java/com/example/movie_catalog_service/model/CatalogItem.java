@@ -1,4 +1,4 @@
-package model;
+package com.example.movie_catalog_service.model;
 
 public class CatalogItem {
 
